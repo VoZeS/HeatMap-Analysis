@@ -43,76 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       
       // --------------------------------------------------------------------------------------------------------------------
 
-    } 
-    // ------------------------------------------------------------------------------
-    
-    // ------------------------------------------------------------------------------ SESSION
-
-    else if (isset($_POST["userID"]) && isset($_POST["startSessionTime"])) {
-      $startSessionTime = $_POST["startSessionTime"];
-      $userID = $_POST["userID"];
-    
-      // INSERT INTO
-      $sql = "INSERT INTO `Sessions`(`Start`, user_id) VALUES ('$startSessionTime', '$userID')";
-
-      //echo "Form2 valido";
-
-    if ($connection->query($sql) === TRUE) {
-      // Obtiene la ultima ID generada
-      $printID = $connection->insert_id;
-  
-      // Imprime la ultima ID generada
-      echo $printID;
-    } else {
-      // Manejar errores de insercion
-      //echo "Error al crear el registro: " . $connection->error;
     }
-    // ------------------------------------------------------------------------------
-  }
-  // ------------------------------------------------------------------------------ SHOPPING
-  else if (isset($_POST["moneySpent"]) && isset($_POST["buyTime"]) && isset($_POST["userID"]) && isset($_POST["sessionID"])) {
-    $moneySpent = $_POST["moneySpent"];
-    $buyTime = $_POST["buyTime"];
-    $userID = $_POST["userID"];
-    $sessionID = $_POST["sessionID"];
-  
-    // INSERT INTO
-    $sql = "INSERT INTO `Shopping` (`User-ID`, `Session-ID`, `Date`, `MoneySpend`) VALUES ('$userID', '$sessionID' , '$buyTime', '$moneySpent')";
-
-    //echo "Form3 valido";
-
-  if ($connection->query($sql) === TRUE) {
-    // Obtiene la ultima ID generada
-    $printID = $connection->insert_id;
-
-    // Imprime la ultima ID generada
-    echo $printID;
-  } else {
-    // Manejar errores de insercion
-    //echo "Error al crear el registro: " . $connection->error;
-  }
-  // ------------------------------------------------------------------------------ END SESSION
-  }
-  else if (isset($_POST["endSessionTime"]) && isset($_POST["sessionID"])) {
-    $endSessionTime = $_POST["endSessionTime"];
-    $sessionID = $_POST["sessionID"];
-
-    // ADD END SESSION TIME
-    $sql = "UPDATE `Sessions` SET `End` = '$endSessionTime' WHERE `SessionID` = '$sessionID'";
-
-    //echo "Form4 valido";
-
-    if ($connection->query($sql) === TRUE) {
-      // Obtiene la ultima ID generada
-      $printID = $connection->insert_id;
-  
-      // Imprime la ultima ID generada
-      echo $printID;
-    } else {
-      // Manejar errores de insercion
-      //echo "Error al crear el registro: " . $connection->error;
-    }
-
+    
   }
   else 
   {
