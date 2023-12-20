@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 public class SenderData : MonoBehaviour
 {
@@ -36,12 +37,14 @@ public class SenderData : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------------------------------------------------- Send Player Data & Get ID
-    public void SendData(string name, string country, string gender, int age, DateTime date)
+    public void SendData(Transform playerPosDead, Transform enemyPosDead, /*Path,*/ Transform playerPosKill, float timeAlive,int timesAttacked)
     {
-        StartCoroutine(SendUserDataCoroutine(name, country, gender, age, date));
+
+        //StartCoroutine(SendUserDataCoroutine());
+
     }
 
-    private IEnumerator SendUserDataCoroutine(string name, string country, string gender, int age, DateTime date)
+    private IEnumerator SendPlayerKillCoroutine(Transform enemyPosDead, Transform playerPosKill,int runID, DateTime date,int SessionID)
     {
         // Define un formato de fecha personalizado
         string formatoPersonalizado = "yyyy-MM-dd HH:mm:ss";
@@ -50,22 +53,22 @@ public class SenderData : MonoBehaviour
         string fechaFormateada = date.ToString(formatoPersonalizado);
 
         // Crear un formulario para los datos
-        WWWForm formUser = new WWWForm();
+       /* WWWForm formUser = new WWWForm();
         formUser.AddField("Name", name);
         formUser.AddField("Age", age);
         formUser.AddField("Gender", gender);
         formUser.AddField("Country", country);
-        formUser.AddField("Date", fechaFormateada);
+        formUser.AddField("Date", fechaFormateada);*/
 
         // Crear una solicitud POST con el formulario
-        UnityWebRequest www = UnityWebRequest.Post(serverURL, formUser);
+       // UnityWebRequest www = UnityWebRequest.Post(serverURL, formUser);
 
 
         // Enviar la solicitud al servidor
-        yield return www.SendWebRequest();
+       // yield return www.SendWebRequest();
 
         // Verificar si hubo un error en la solicitud
-        if (www.result == UnityWebRequest.Result.Success)
+      /*  if (www.result == UnityWebRequest.Result.Success)
         {
             Debug.Log("Datos DEL USER enviados con exito al servidor.");
             Debug.Log(www.downloadHandler.text);
@@ -89,7 +92,12 @@ public class SenderData : MonoBehaviour
         else
         {
             Debug.LogError("Error al enviar datos DEL USER al servidor: " + www.error);
-        }
+        }*/
+    }
+    //Sistema de herencias da datos
+    private IEnumerator SendPlayerDeadCoroutine(Transform playerPosDead, Transform path, Vector3 angulosEuler, DateTime Date)
+    {
+
     }
 
     // --------------------------------------------------------------------------------------------------------------------
