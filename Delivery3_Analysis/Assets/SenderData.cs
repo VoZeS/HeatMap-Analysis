@@ -6,7 +6,6 @@ using UnityEngine.UIElements;
 
 public class SenderData : MonoBehaviour
 {
-
     // FER-HO MES OPTIM!!! ------ Sistema de herencias da datos --------
 
     public string serverURL = "https://citmalumnes.upc.es/~davidbo5/ServerPhP.php"; // Server URL
@@ -24,7 +23,7 @@ public class SenderData : MonoBehaviour
     {
         // ------------------------- WORK IN PROGRESS
 
-        //Simulator.OnNewPlayer += SendData;
+        //damageableScript.OnDeath += SendKillData;
         //Simulator.OnNewSession += SendNewSessionTime;
         //Simulator.OnEndSession += SendEndSessionTime;
         //Simulator.OnBuyItem += SendbuyInfo;
@@ -46,65 +45,69 @@ public class SenderData : MonoBehaviour
     {
         // ------------------------- WORK IN PROGRESS
 
-        //StartCoroutine(SendPlayerKillCoroutine(sessionID, runID, playerPosKill, enemyPosDeath, time));
+        StartCoroutine(SendPlayerKillCoroutine(sessionID, runID, playerPosKill, enemyPosDeath, time));
 
     }
 
     // ------------------------- WORK IN PROGRESS
 
-    //private IEnumerator SendPlayerKillCoroutine(int SessionID, int runID, Transform enemyPosDeath, Transform playerPosKill, DateTime time)
-    //{
-    //    // Define un formato de fecha personalizado
-    //    string formatoPersonalizado = "yyyy-MM-dd HH:mm:ss";
+    private IEnumerator SendPlayerKillCoroutine(int sessionID, int runID, Transform enemyPosDeath, Transform playerPosKill, DateTime time)
+    {
+        // Define un formato de fecha personalizado
+        string formatoPersonalizado = "yyyy-MM-dd HH:mm:ss";
 
-    //    // Convierte la fecha en una cadena con el formato personalizado
-    //    string fechaFormateada = time.ToString(formatoPersonalizado);
+        // Convierte la fecha en una cadena con el formato personalizado
+        string fechaFormateada = time.ToString(formatoPersonalizado);
 
-    //    // Crear un formulario para los datos
-    //    WWWForm formUser = new WWWForm();
-    //    formUser.AddField("Name", name);
-    //    formUser.AddField("Age", age);
-    //    formUser.AddField("Gender", gender);
-    //    formUser.AddField("Country", country);
-    //    formUser.AddField("Date", fechaFormateada);
+        // Crear un formulario para los datos
+        WWWForm formUser = new WWWForm();
+        formUser.AddField("SessionID", sessionID);
+        formUser.AddField("RunID", runID);
+        formUser.AddField("PlayerKiller_PositionX", ((int)playerPosKill.transform.position.x));
+        formUser.AddField("PlayerKiller_PositionY", ((int)playerPosKill.transform.position.y));
+        formUser.AddField("PlayerKiller_PositionZ", ((int)playerPosKill.transform.position.z));
+        formUser.AddField("EnemyDeath_PositionX", ((int)enemyPosDeath.transform.position.x));
+        formUser.AddField("EnemyDeath_PositionY", ((int)enemyPosDeath.transform.position.y));
+        formUser.AddField("EnemyDeath_PositionZ", ((int)enemyPosDeath.transform.position.z));
+        formUser.AddField("Time", fechaFormateada);
 
-    //    // Crear una solicitud POST con el formulario
-    //   // UnityWebRequest www = UnityWebRequest.Post(serverURL, formUser);
+        // Crear una solicitud POST con el formulario
+        UnityWebRequest www = UnityWebRequest.Post(serverURL, formUser);
 
 
-    //    // Enviar la solicitud al servidor
-    //   // yield return www.SendWebRequest();
+        // Enviar la solicitud al servidor
+        yield return www.SendWebRequest();
 
-    //    // Verificar si hubo un error en la solicitud
-    //    if (www.result == UnityWebRequest.Result.Success)
-    //    {
-    //        Debug.Log("Datos DEL USER enviados con exito al servidor.");
-    //        Debug.Log(www.downloadHandler.text);
+        // Verificar si hubo un error en la solicitud
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Datos DE LA KILL enviados con exito al servidor.");
+            Debug.Log(www.downloadHandler.text);
 
-    //        string userId_String = www.downloadHandler.text;
+            string userId_String = www.downloadHandler.text;
 
-    //        if (uint.TryParse(userId_String, out userId_uInt))
-    //        {
-    //            // La conversión fue exitosa, y valorComoInt contiene el valor entero.
-    //            //CallbackEvents.OnAddPlayerCallback?.Invoke(userId_uInt);
-    //            Debug.Log(www.downloadHandler.text);
-    //        }
-    //        else
-    //        {
-    //            // La conversión falló, puedes manejar el error aquí.
-    //            Debug.Log("Error USERID");
-    //            Debug.Log(www.downloadHandler.text);
-    //        }
+            if (uint.TryParse(userId_String, out userId_uInt))
+            {
+                // La conversión fue exitosa, y valorComoInt contiene el valor entero.
+                //CallbackEvents.OnAddPlayerCallback?.Invoke(userId_uInt);
+                Debug.Log(www.downloadHandler.text);
+            }
+            else
+            {
+                // La conversión falló, puedes manejar el error aquí.
+                Debug.Log("Error KILLID");
+                Debug.Log(www.downloadHandler.text);
+            }
 
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError("Error al enviar datos DEL USER al servidor: " + www.error);
-    //    }
-    //}
+        }
+        else
+        {
+            Debug.LogError("Error al enviar datos DE LA KILL al servidor: " + www.error);
+        }
+    }
 
-    // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP DEATH DATA
-    public void SendDeathData(int sessionID, int runID, Transform playerPosDeath, Transform enemyPosKill, DateTime time)
+        // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP DEATH DATA
+        public void SendDeathData(int sessionID, int runID, Transform playerPosDeath, Transform enemyPosKill, DateTime time)
     {
         // ------------------------- WORK IN PROGRESS
 
