@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
 public class SenderData : MonoBehaviour
 {
+    Gamekit3D.Damageable damageableScript;
+
     // FER-HO MES OPTIM!!! ------ Sistema de herencias da datos --------
 
     public string serverURL = "https://citmalumnes.upc.es/~davidbo5/ServerPhP.php"; // Server URL
@@ -21,7 +24,6 @@ public class SenderData : MonoBehaviour
 
     private void OnEnable()
     {
-
         damageableScript.OnDeath.AddListener(SendKillData);
 
         //damageableScript.OnReceiveDamage.AddListener(func);
@@ -48,9 +50,14 @@ public class SenderData : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP KILL DATA
-    public void SendKillData(int sessionID, int runID, Transform playerPosKill, Transform enemyPosDeath, DateTime time)
+    public void SendKillData()
     {
         // ------------------------- WORK IN PROGRESS
+        int sessionID = 1;
+        int runID = 1;
+        Vector3 playerPosKill = new Vector3(0,0,0);
+        Vector3 enemyPosDeath = new Vector3(0, 0, 0);
+        DateTime time = DateTime.Now;
 
         StartCoroutine(SendPlayerKillCoroutine(sessionID, runID, playerPosKill, enemyPosDeath, time));
 
@@ -58,7 +65,7 @@ public class SenderData : MonoBehaviour
 
     // ------------------------- WORK IN PROGRESS
 
-    private IEnumerator SendPlayerKillCoroutine(int sessionID, int runID, Transform enemyPosDeath, Transform playerPosKill, DateTime time)
+    private IEnumerator SendPlayerKillCoroutine(int sessionID, int runID, Vector3 enemyPosDeath, Vector3 playerPosKill, DateTime time)
     {
         // Define un formato de fecha personalizado
         string formatoPersonalizado = "yyyy-MM-dd HH:mm:ss";
@@ -70,12 +77,12 @@ public class SenderData : MonoBehaviour
         WWWForm formUser = new WWWForm();
         formUser.AddField("SessionID", sessionID);
         formUser.AddField("RunID", runID);
-        formUser.AddField("PlayerKiller_PositionX", ((int)playerPosKill.transform.position.x));
-        formUser.AddField("PlayerKiller_PositionY", ((int)playerPosKill.transform.position.y));
-        formUser.AddField("PlayerKiller_PositionZ", ((int)playerPosKill.transform.position.z));
-        formUser.AddField("EnemyDeath_PositionX", ((int)enemyPosDeath.transform.position.x));
-        formUser.AddField("EnemyDeath_PositionY", ((int)enemyPosDeath.transform.position.y));
-        formUser.AddField("EnemyDeath_PositionZ", ((int)enemyPosDeath.transform.position.z));
+        formUser.AddField("PlayerKiller_PositionX", ((int)playerPosKill.x));
+        formUser.AddField("PlayerKiller_PositionY", ((int)playerPosKill.y));
+        formUser.AddField("PlayerKiller_PositionZ", ((int)playerPosKill.z));
+        formUser.AddField("EnemyDeath_PositionX", ((int)enemyPosDeath.x));
+        formUser.AddField("EnemyDeath_PositionY", ((int)enemyPosDeath.y));
+        formUser.AddField("EnemyDeath_PositionZ", ((int)enemyPosDeath.z));
         formUser.AddField("Time", fechaFormateada);
 
         // Crear una solicitud POST con el formulario
