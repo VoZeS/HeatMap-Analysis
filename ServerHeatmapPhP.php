@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $enemyPositionZ = $_POST["EnemyDeath_PositionZ"];
       $time = $_POST["Time"];
 
-      // HEAT MAP KILL DATA
 // HEAT MAP KILL DATA
 $sql = "INSERT INTO `HeatMap_Kill` (`SessionID`, `RunID`, 
   `PlayerKiller_PositionX`, `PlayerKiller_PositionY`, `PlayerKiller_PositionZ`, 
@@ -48,6 +47,7 @@ if ($stmt) {
   }
 
   $stmt->close();
+
 } else {
   echo "Error en la preparación de la consulta: " . $connection->error;
 }
@@ -69,45 +69,30 @@ if ($stmt) {
       $time = $_POST["Time"];
 
       // HEAT MAP DEATH DATA
-      $sql = "INSERT INTO `HeatMap_Death` (`SessionID`, `RunID`, 
-      `PlayerDeath_PositionX`, `PlayerDeath_PositionY`, `PlayerDeath_PositionZ`, 
-      `EnemyKiller_PositionX`, `EnemyKiller_PositionY`, `EnemyKiller_PositionZ`, 
-      `Time`) VALUES (?, ?, ?, ?, ?)";
+$sql = "INSERT INTO `HeatMap_Death` (`SessionID`, `RunID`, 
+`PlayerDeath_PositionX`, `PlayerDeath_PositionY`, `PlayerDeath_PositionZ`, 
+`EnemyKiller_PositionX`, `EnemyKiller_PositionY`, `EnemyKiller_PositionZ`, 
+`Time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-if ($connection->query($sql) === TRUE) {
-  // Obtiene la ultima ID generada
-  $printID = $connection->insert_id;
+$stmt = $connection->prepare($sql);
 
-  // Imprime la ultima ID generada
+if ($stmt) {
+$stmt->bind_param("iiiiiiiis", $sessionID, $runID, $playerPositionX, $playerPositionY, $playerPositionZ, $enemyPositionX, $enemyPositionY, $enemyPositionZ, $time);
+
+if ($stmt->execute()) {
+  $printID = $stmt->insert_id;
   echo $printID;
+} else {
+  echo "Error al crear el registro: " . $stmt->error;
+}
+
+$stmt->close();
+
 } else {
   // Manejar errores de insercion
   //echo "Error al crear el registro: " . $connection->error;
 }
 
-      // ----------------------------------------------------------------------------------------------------------------------------- NEW CODE NOT WORKING
-      // $stmt = $connection->prepare("INSERT INTO `HeatMap_Death` (`SessionID`, `RunID`, 
-      //                                           `PlayerDeath_PositionX`, `PlayerDeath_PositionY`, `PlayerDeath_PositionZ`, 
-      //                                           `EnemyKiller_PositionX`, `EnemyKiller_PositionY`, `EnemyKiller_PositionZ`, 
-      //                                           `Time`) VALUES (?, ?, ?, ?, ?)");
-
-      // $stmt->bind_param("sisss", $sessionID, $runID, $playerPositionX, $playerPositionY, $playerPositionZ, $enemyPositionX, $enemyPositionY, $enemyPositionZ, $time);
-
-      // if ($stmt->execute()) {
-      //     // Obtiene la última ID generada
-      //     $printID = $stmt->insert_id;
-    
-      //     // Imprime la última ID generada
-      //    echo $printID;
-      // }  else {
-      //     // Manejar errores de inserción
-      //    echo "Error al crear el registro: " . $stmt->error;
-      // }
-
-      // // Cerrar la declaración
-      // $stmt->close();
-      
-      // -----------------------------------------------------------
     }
     // ------------------------------------------------------------------------------ PATH
     else if (isset($_POST["SessionID"]) && isset($_POST["RunID"]) && 

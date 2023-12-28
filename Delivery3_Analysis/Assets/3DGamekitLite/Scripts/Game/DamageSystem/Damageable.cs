@@ -37,6 +37,9 @@ namespace Gamekit3D
 
         System.Action schedule;
 
+        // DATA ANALYST CHANGES
+        public Vector3 positionToDamager;
+
         void Start()
         {
             ResetDamage();
@@ -87,7 +90,7 @@ namespace Gamekit3D
             forward = Quaternion.AngleAxis(hitForwardRotation, transform.up) * forward;
 
             //we project the direction to damager to the plane formed by the direction of damage
-            Vector3 positionToDamager = data.damageSource - transform.position;
+            positionToDamager = data.damageSource - transform.position;
             positionToDamager -= transform.up * Vector3.Dot(transform.up, positionToDamager);
 
             if (Vector3.Angle(forward, positionToDamager) > hitAngle * 0.5f)
