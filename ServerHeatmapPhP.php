@@ -95,7 +95,7 @@ $stmt->close();
 
     }
     // ------------------------------------------------------------------------------ PATH
-    else if (isset($_POST["SessionID"]) && isset($_POST["RunID"]) && 
+    else if (isset($_POST["PathID"]) && isset($_POST["RunID"]) && 
     isset($_POST["Player_PositionX"]) && isset($_POST["Player_PositionY"]) && isset($_POST["Player_PositionZ"]) && 
     isset($_POST["Player_RotationX"]) && isset($_POST["Player_RotationY"]) && isset($_POST["Player_RotationZ"]) && 
     isset($_POST["Time"])) {
@@ -110,29 +110,28 @@ $stmt->close();
       $playerRotationZ = $_POST["Player_RotationZ"];
       $time = $_POST["Time"];
 
-      // HEAT MAP DEATH DATA
-      $stmt = $connection->prepare("INSERT INTO `HeatMap_Path` (`SessionID`, `RunID`, 
-                                                `PlayerDeath_PositionX`, `PlayerDeath_PositionY`, `PlayerDeath_PositionZ`, 
-                                                `EnemyKiller_PositionX`, `EnemyKiller_PositionY`, `EnemyKiller_PositionZ`, 
-                                                `Time`) VALUES (?, ?, ?, ?, ?)");
+      // HEAT MAP PATH DATA
+$sql = "INSERT INTO `HeatMap_Path` (`PathID`, `RunID`, 
+`Player_PositionX`, `Player_PositionY`, `Player_PositionZ`, 
+`Player_RotationX`, `Player_RotationY`, `Player_RotationZ`, 
+`Time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-      $stmt->bind_param("sisss", $sessionID, $runID, $playerPositionX, $playerPositionY, $playerPositionZ, $playerRotationX, $playerRotationY, $playerRotationZ, $time);
+$stmt = $connection->prepare($sql);
 
-      if ($stmt->execute()) {
-          // Obtiene la última ID generada
-          $printID = $stmt->insert_id;
-    
-          // Imprime la última ID generada
-         echo $printID;
-      }  else {
-          // Manejar errores de inserción
-         echo "Error al crear el registro: " . $stmt->error;
-      }
+if ($stmt) {
+  $stmt->bind_param("iiiiiiiis", $sessionID, $runID, $playerPositionX, $playerPositionY, $playerPositionZ, $playerRotationX, $playerRotationY, $playerRotationZ, $time);
 
-      // Cerrar la declaración
-      $stmt->close();
+if ($stmt->execute()) {
+  $printID = $stmt->insert_id;
+  echo $printID;
+} else {
+  echo "Error al crear el registro: " . $stmt->error;
+}
+
+$stmt->close();
       
     }
+  }
     else 
     {
       //echo "Form no valido";
@@ -141,4 +140,5 @@ $stmt->close();
   // CLOSE
   mysqli_close($connection);
 }
+
 ?>

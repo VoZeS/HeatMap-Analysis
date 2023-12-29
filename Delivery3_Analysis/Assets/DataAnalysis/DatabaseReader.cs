@@ -1,0 +1,169 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+
+
+[System.Serializable]
+public class HeatMapKillData
+{
+    public int KillID;
+    public int SessionID;
+    public int RunID;
+
+    // Positions
+    public int PlayerKiller_PositionX;
+    public int PlayerKiller_PositionY;
+    public int PlayerKiller_PositionZ;
+
+    public int EnemyDeath_PositionX;
+    public int EnemyDeath_PositionY;
+    public int EnemyDeath_PositionZ;
+
+    // Vectors
+    public Vector3 playerKillerPosition;
+    public Vector3 enemyDeathPosition;
+
+    public string Time;
+
+    public HeatMapKillData(int kill_id, int session_id, int run_id, int playerKillerX, int playerKillerY, int playerKillerZ,
+                           int enemyDeathX, int enemyDeathY, int enemyDeathZ, string _time)
+    {
+        KillID = kill_id;
+        SessionID = session_id;
+        RunID = run_id;
+        playerKillerPosition = new Vector3(playerKillerX, playerKillerY, playerKillerZ);
+        enemyDeathPosition = new Vector3(enemyDeathX, enemyDeathY, enemyDeathZ);
+        Time = _time;
+    }
+}
+
+[System.Serializable]
+public class HeatMapDeathData
+{
+    public int DeathID;
+    public int SessionID;
+    public int RunID;
+
+    // Positions
+    public int PlayerDeath_PositionX;
+    public int PlayerDeath_PositionY;
+    public int PlayerDeath_PositionZ;
+
+    public int EnemyKiller_PositionX;
+    public int EnemyKiller_PositionY;
+    public int EnemyKiller_PositionZ;
+
+    // Vectors
+    public Vector3 playerDeathPosition;
+    public Vector3 enemyKillerPosition;
+
+    public string Time;
+
+    public HeatMapDeathData(int death_id, int session_id, int run_id, int playerKillerX, int playerKillerY, int playerKillerZ,
+                           int enemyDeathX, int enemyDeathY, int enemyDeathZ, string _time)
+    {
+        DeathID = death_id;
+        SessionID = session_id;
+        RunID = run_id;
+        playerDeathPosition = new Vector3(playerKillerX, playerKillerY, playerKillerZ);
+        enemyKillerPosition = new Vector3(enemyDeathX, enemyDeathY, enemyDeathZ);
+        Time = _time;
+    }
+}
+
+public class DatabaseReader : MonoBehaviour
+{
+    public List<HeatMapKillData> killDataList = new List<HeatMapKillData>();
+    public List<HeatMapDeathData> deathDataList = new List<HeatMapDeathData>();
+
+    void Start()
+    {
+        // Called in START, but can be called when NECESSARY
+        StartCoroutine(ReadKillDataFromPHP());
+        StartCoroutine(ReadDeathDataFromPHP());
+    }
+
+    IEnumerator ReadKillDataFromPHP()
+    {
+        UnityWebRequest www = UnityWebRequest.Get("https://citmalumnes.upc.es/~davidbo5/Database_KillReader.php");
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log("Error al leer datos desde PHP: " + www.error);
+        }
+        else
+        {
+            // Parser JSON
+            string jsonString = www.downloadHandler.text;
+            Debug.Log(jsonString);
+
+            // Deserialize JSON to an array
+            HeatMapKillData[] dataArray = JsonHelper.FromJson<HeatMapKillData>(jsonString);
+
+            foreach (var data in dataArray)
+            {
+                HeatMapKillData heatmapKillData = new HeatMapKillData(data.KillID, data.SessionID, data.RunID,
+                data.PlayerKiller_PositionX, data.PlayerKiller_PositionY, data.PlayerKiller_PositionZ,
+                data.EnemyDeath_PositionX, data.EnemyDeath_PositionY, data.EnemyDeath_PositionZ, data.Time);
+
+                killDataList.Add(heatmapKillData);
+
+            }
+        }
+
+        // DEBUG EXAMPLE!
+        Debug.Log("Debug Example 1: " + killDataList[50].KillID + " " + killDataList[50].playerKillerPosition);
+        Debug.Log("Debug Example 2: " + killDataList[57].KillID + " " + killDataList[57].playerKillerPosition);
+        Debug.Log("Debug Example 3: " + killDataList[80].KillID + " " + killDataList[80].playerKillerPosition);
+        Debug.Log("Debug Example 4: " + killDataList[10].KillID + " " + killDataList[10].playerKillerPosition);
+
+    }
+
+    IEnumerator ReadDeathDataFromPHP()
+    {
+        UnityWebRequest www = UnityWebRequest.Get("https://citmalumnes.upc.es/~davidbo5/Database_DeathReader.php");
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log("Error al leer datos desde PHP: " + www.error);
+        }
+        else
+        {
+            // Parser JSON
+            string jsonString = www.downloadHandler.text;
+            Debug.Log(jsonString);
+
+            // Deserialize JSON to an array
+            HeatMapDeathData[] dataArray = JsonHelper.FromJson<HeatMapDeathData>(jsonString);
+
+            foreach (var data in dataArray)
+            {
+                deathDataList.Add(data);
+
+            }
+        }
+
+        Debug.Log(deathDataList.AsReadOnly());
+    }
+
+    // Definir una clase de utilidad para deserializar arrays JSON
+    public static class JsonHelper
+    {
+        public static T[] FromJson<T>(string json)
+        {
+            string newJson = "{\"Items\":" + json + "}";
+            Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
+            return wrapper.Items;
+        }
+
+        [System.Serializable]
+        private class Wrapper<T>
+        {
+            public T[] Items;
+        }
+    }
+
+}
