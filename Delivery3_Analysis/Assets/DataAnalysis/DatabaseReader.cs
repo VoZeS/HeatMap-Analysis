@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -60,14 +60,14 @@ public class HeatMapDeathData
 
     public string Time;
 
-    public HeatMapDeathData(int death_id, int session_id, int run_id, int playerKillerX, int playerKillerY, int playerKillerZ,
-                           int enemyDeathX, int enemyDeathY, int enemyDeathZ, string _time)
+    public HeatMapDeathData(int death_id, int session_id, int run_id, int playerDeathX, int playerDeathY, int playerDeathZ,
+                           int enemyKillerX, int enemyKillerY, int enemyKillerZ, string _time)
     {
         DeathID = death_id;
         SessionID = session_id;
         RunID = run_id;
-        playerDeathPosition = new Vector3(playerKillerX, playerKillerY, playerKillerZ);
-        enemyKillerPosition = new Vector3(enemyDeathX, enemyDeathY, enemyDeathZ);
+        playerDeathPosition = new Vector3(playerDeathX, playerDeathY, playerDeathZ);
+        enemyKillerPosition = new Vector3(enemyKillerX, enemyKillerY, enemyKillerZ);
         Time = _time;
     }
 }
@@ -149,12 +149,16 @@ public class DatabaseReader : MonoBehaviour
                 data.EnemyKiller_PositionX, data.EnemyKiller_PositionY, data.EnemyKiller_PositionZ, data.Time);
 
                 
-                deathDataList.Add(data);
+                deathDataList.Add(heatmapDeathData);
 
             }
-        }
 
-        Debug.Log(deathDataList.AsReadOnly());
+            // DEBUG EXAMPLE!
+            Debug.Log("Debug Example 1: " + deathDataList[50].DeathID + " " + deathDataList[50].playerDeathPosition);
+            Debug.Log("Debug Example 2: " + deathDataList[57].DeathID + " " + deathDataList[57].playerDeathPosition);
+            Debug.Log("Debug Example 3: " + deathDataList[80].DeathID + " " + deathDataList[80].playerDeathPosition);
+            Debug.Log("Debug Example 4: " + deathDataList[10].DeathID + " " + deathDataList[10].playerDeathPosition);
+        }
     }
 
     // Definir una clase de utilidad para deserializar arrays JSON
