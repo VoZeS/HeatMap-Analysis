@@ -108,6 +108,8 @@ public class DatabaseReader : MonoBehaviour
                 data.PlayerKiller_PositionX, data.PlayerKiller_PositionY, data.PlayerKiller_PositionZ,
                 data.EnemyDeath_PositionX, data.EnemyDeath_PositionY, data.EnemyDeath_PositionZ, data.Time);
 
+
+                
                 killDataList.Add(heatmapKillData);
 
             }
@@ -141,6 +143,12 @@ public class DatabaseReader : MonoBehaviour
 
             foreach (var data in dataArray)
             {
+
+                 HeatMapDeathData heatmapDeathData = new HeatMapDeathData(data.DeathID, data.SessionID, data.RunID,
+                data.PlayerDeath_PositionX, data.PlayerDeath_PositionY, data.PlayerDeath_PositionZ,
+                data.EnemyKiller_PositionX, data.EnemyKiller_PositionY, data.EnemyKiller_PositionZ, data.Time);
+
+                
                 deathDataList.Add(data);
 
             }
