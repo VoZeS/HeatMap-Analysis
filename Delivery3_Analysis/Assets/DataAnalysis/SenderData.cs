@@ -330,7 +330,7 @@ namespace Gamekit3D
                 else
                 {
                     // La conversión falló, puedes manejar el error aquí.
-                    Debug.Log("Error PATHID");
+                    Debug.Log("Error PATHSTEPID");
                     Debug.Log(www.downloadHandler.text);
                 }
 

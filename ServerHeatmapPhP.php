@@ -95,7 +95,7 @@ $stmt->close();
 
     }
     // ------------------------------------------------------------------------------ PATH
-    else if (isset($_POST["PathID"]) && isset($_POST["RunID"]) && 
+    else if (isset($_POST["SessionID"]) && isset($_POST["RunID"]) && 
     isset($_POST["Player_PositionX"]) && isset($_POST["Player_PositionY"]) && isset($_POST["Player_PositionZ"]) && 
     isset($_POST["Player_RotationX"]) && isset($_POST["Player_RotationY"]) && isset($_POST["Player_RotationZ"]) && 
     isset($_POST["Time"])) {
@@ -111,7 +111,7 @@ $stmt->close();
       $time = $_POST["Time"];
 
       // HEAT MAP PATH DATA
-$sql = "INSERT INTO `HeatMap_Path` (`PathID`, `RunID`, 
+$sql = "INSERT INTO `HeatMap_Path` (`SessionID`, `RunID`, 
 `Player_PositionX`, `Player_PositionY`, `Player_PositionZ`, 
 `Player_RotationX`, `Player_RotationY`, `Player_RotationZ`, 
 `Time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
