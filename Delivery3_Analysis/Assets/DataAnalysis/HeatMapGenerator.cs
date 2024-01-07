@@ -74,7 +74,7 @@ public class HeatmapGenerator : MonoBehaviour
         {
             if (collider.CompareTag("HeatmapCube") && collider.GetComponent<Renderer>().material.color == baseColor)
             {
-                
+                sameTypeCount++;
             }
         }
 
@@ -82,4 +82,6 @@ public class HeatmapGenerator : MonoBehaviour
 
         return baseColor * intensityMultiplier;
     }
+
+    
 }
