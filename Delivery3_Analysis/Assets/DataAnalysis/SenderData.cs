@@ -44,7 +44,7 @@ namespace Gamekit3D
 
             Debug.Log("Session ID: " + session_id);
 
-           
+
         }
 
         private void LoadSessionID()
@@ -76,17 +76,22 @@ namespace Gamekit3D
                 {
                     damageableEnemiesScritps[i] = damageableObj;
                     damageableEnemiesScritps[i].OnDeath.AddListener(SendKillData);
+                    damageableEnemiesScritps[i].OnDeath.AddListener(SendPathData); //Provisional
                     i++;
                 }
             }
 
             damageablePlayerScript.OnDeath.AddListener(SendDeathData);
 
-            //damageableScript.OnReceiveDamage.AddListener(func);
-            //damageableScript.OnHitWhileInvulnerable.AddListener(func);
-            //damageableScript.OnBecomeVulnerable.AddListener(func);
-            //damageableScript.OnResetDamage.AddListener(func);
+            //Path sending provisional
+            {
+                damageablePlayerScript.OnDeath.AddListener(SendPathData);
+                damageablePlayerScript.OnReceiveDamage.AddListener(SendPathData);
+                damageablePlayerScript.OnHitWhileInvulnerable.AddListener(SendPathData);
+                damageablePlayerScript.OnBecomeVulnerable.AddListener(SendPathData);
+                damageablePlayerScript.OnResetDamage.AddListener(SendPathData);
 
+            }
 
 
 
@@ -96,16 +101,24 @@ namespace Gamekit3D
 
             for (int i = 0; i < damageableEnemiesScritps.Length; i++)
             {
-                if(damageableEnemiesScritps[i] != null)
+                if (damageableEnemiesScritps[i] != null)
+                {
                     damageableEnemiesScritps[i].OnDeath.RemoveListener(SendKillData);
+                    damageableEnemiesScritps[i].OnDeath.RemoveListener(SendPathData);// Provisional
+                }
+
             }
 
             damageablePlayerScript.OnDeath.RemoveListener(SendDeathData);
 
-            //damageableScript.OnReceiveDamage.RemoveListener(func);
-            //damageableScript.OnHitWhileInvulnerable.RemoveListener(func);
-            //damageableScript.OnBecomeVulnerable.RemoveListener(func);
-            //damageableScript.OnResetDamage.RemoveListener(func);
+
+            damageablePlayerScript.OnDeath.RemoveListener(SendPathData);
+            damageablePlayerScript.OnReceiveDamage.RemoveListener(SendPathData);
+            damageablePlayerScript.OnHitWhileInvulnerable.RemoveListener(SendPathData);
+            damageablePlayerScript.OnBecomeVulnerable.RemoveListener(SendPathData);
+            damageablePlayerScript.OnResetDamage.RemoveListener(SendPathData);
+
+
 
 
 
@@ -118,11 +131,11 @@ namespace Gamekit3D
             int sessionID = session_id;
             int runID = run_id;
             Vector3 playerPosKill = GameObject.Find("Ellen").transform.position; // POSITION PLAYER 
-            Vector3 enemyPosDeath = new Vector3(-100,-100,-100);
+            Vector3 enemyPosDeath = new Vector3(-100, -100, -100);
 
             for (int i = 0; i < damageableEnemiesScritps.Length; i++)
             {
-                if(damageableEnemiesScritps[i] != null && damageableEnemiesScritps[i].currentHitPoints <= 0)
+                if (damageableEnemiesScritps[i] != null && damageableEnemiesScritps[i].currentHitPoints <= 0)
                 {
                     enemyPosDeath = damageableEnemiesScritps[i].transform.position; // RECEIVER DAMAGE (enemy)
 
@@ -265,14 +278,19 @@ namespace Gamekit3D
         // --------------------------------------------------------------------------------------------------------------------
 
         // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP PATH
-        public void SendPathData(int sessionID, int runID, Transform playerPos, DateTime time)
+        public void SendPathData()
         {
             // ------------------------- WORK DONE BUT NECESSARY??
+            int sessionID = session_id;
+            int runID = run_id;
+            Vector3 playerPos = GameObject.Find("Ellen").transform.position; // POSITION PLAYER 
+            Vector3 playerRot = GameObject.Find("Ellen").transform.rotation.eulerAngles;
+            DateTime time = DateTime.Now;
 
-            StartCoroutine(SendPathCoroutine(sessionID, runID, playerPos, time));
+            StartCoroutine(SendPathCoroutine(sessionID, runID, playerPos, playerRot, time));
 
         }
-        private IEnumerator SendPathCoroutine(int sessionID, int runID, Transform playerPos, DateTime time)
+        private IEnumerator SendPathCoroutine(int sessionID, int runID, Vector3 playerPos, Vector3 playerRot, DateTime time)
         {
             string formatoPersonalizado = "yyyy-MM-dd HH:mm:ss";
 
@@ -281,9 +299,12 @@ namespace Gamekit3D
             WWWForm formUser = new WWWForm();
             formUser.AddField("SessionID", sessionID);
             formUser.AddField("RunID", runID);
-            formUser.AddField("Player_PositionX", ((int)playerPos.transform.position.x));
-            formUser.AddField("Player_PositionY", ((int)playerPos.transform.position.y));
-            formUser.AddField("Player_PositionZ", ((int)playerPos.transform.position.z));
+            formUser.AddField("Player_PositionX", ((int)playerPos.x));
+            formUser.AddField("Player_PositionY", ((int)playerPos.y));
+            formUser.AddField("Player_PositionZ", ((int)playerPos.z));
+            formUser.AddField("Player_RotationX", ((int)playerRot.x));
+            formUser.AddField("Player_RotationY", ((int)playerRot.y));
+            formUser.AddField("Player_RotationZ", ((int)playerRot.z));
             formUser.AddField("Time", fechaFormateada);
 
 
