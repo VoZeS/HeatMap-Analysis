@@ -228,7 +228,7 @@ namespace Gamekit3D
                         Damageable.DamageMessage damageData = (Damageable.DamageMessage)data;
                         //Die(damageData);
                         DamageMessage _data = (DamageMessage)data;
-                        enemyKillerPos = _data.damager.transform.localPosition;
+                        enemyKillerPos = _data.damager.transform.position;
                     }
                     break;
             }
@@ -242,7 +242,7 @@ namespace Gamekit3D
             int sessionID = session_id;
             int runID = run_id;
             Vector3 playerPosDeath = GameObject.Find("Ellen").transform.position; // POSITION PLAYER 
-            Vector3 enemyPosKill = playerPosDeath + enemyKillerPos;
+            Vector3 enemyPosKill = enemyKillerPos;
             DateTime time = DateTime.Now;
 
             run_id++;
