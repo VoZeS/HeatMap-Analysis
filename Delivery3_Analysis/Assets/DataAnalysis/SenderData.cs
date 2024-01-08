@@ -228,7 +228,7 @@ namespace Gamekit3D
                         Damageable.DamageMessage damageData = (Damageable.DamageMessage)data;
                         //Die(damageData);
                         DamageMessage _data = (DamageMessage)data;
-                        enemyKillerPos = _data.damager.transform.position;
+                        enemyKillerPos = _data.damager.transform.localPosition;
                     }
                     break;
             }
