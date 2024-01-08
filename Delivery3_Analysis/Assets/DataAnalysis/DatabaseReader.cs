@@ -132,9 +132,6 @@ public class DatabaseReader : MonoBehaviour
         {
             string jsonString = "";
             Debug.Log("Error al leer datos desde PHP: " + www.error);
-
-            // Guardar el JSON en un archivo de texto
-            SaveJsonToFile("Data.json", jsonString);
         }
         else
         {
@@ -156,7 +153,10 @@ public class DatabaseReader : MonoBehaviour
                 killDataList.Add(heatmapKillData);
 
             }
-            //SaveJsonAsTextFile("Data.txt", jsonString);
+            // Guardar el JSON en un archivo de texto
+            SaveJsonToFile("Data.json", jsonString);
+
+            SaveJsonAsTextFile("Data.txt", jsonString);
         }
 
         // DEBUG EXAMPLE!
@@ -170,7 +170,8 @@ public class DatabaseReader : MonoBehaviour
     // Método para guardar el JSON en un archivo de texto
     private void SaveJsonToFile(string fileName, string json)
     {
-        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+        string subfolderPath = "HeatMap/Assets";
+        string filePath = Path.Combine(Application.dataPath, subfolderPath, fileName);
 
         try
         {
@@ -184,9 +185,10 @@ public class DatabaseReader : MonoBehaviour
         }
     }
 
-    /*private void SaveJsonAsTextFile(string fileName, string json)
+    private void SaveJsonAsTextFile(string fileName, string json)
     {
-        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+        string subfolderPath = "HeatMap/Assets";
+        string filePath = Path.Combine(Application.dataPath, subfolderPath, fileName);
 
         try
         {
@@ -197,7 +199,7 @@ public class DatabaseReader : MonoBehaviour
         {
             Debug.LogError("Error al guardar el contenido JSON como archivo de texto: " + e.Message);
         }
-    }*/
+    }
 
     IEnumerator ReadDeathDataFromPHP()
     {
