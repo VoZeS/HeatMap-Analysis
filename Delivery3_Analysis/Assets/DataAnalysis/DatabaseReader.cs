@@ -152,10 +152,10 @@ public class DatabaseReader : MonoBehaviour
         }
 
         // DEBUG EXAMPLE!
-        Debug.Log("Debug Example 1: " + killDataList[50].KillID + " " + killDataList[50].playerKillerPosition);
-        Debug.Log("Debug Example 2: " + killDataList[57].KillID + " " + killDataList[57].playerKillerPosition);
-        Debug.Log("Debug Example 3: " + killDataList[80].KillID + " " + killDataList[80].playerKillerPosition);
-        Debug.Log("Debug Example 4: " + killDataList[10].KillID + " " + killDataList[10].playerKillerPosition);
+        //Debug.Log("Debug Example 1: " + killDataList[50].KillID + " " + killDataList[50].playerKillerPosition);
+        //Debug.Log("Debug Example 2: " + killDataList[57].KillID + " " + killDataList[57].playerKillerPosition);
+        //Debug.Log("Debug Example 3: " + killDataList[80].KillID + " " + killDataList[80].playerKillerPosition);
+        //Debug.Log("Debug Example 4: " + killDataList[10].KillID + " " + killDataList[10].playerKillerPosition);
 
     }
 
