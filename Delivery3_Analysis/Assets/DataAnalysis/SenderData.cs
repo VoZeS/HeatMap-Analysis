@@ -1,13 +1,16 @@
+using Gamekit3D.Message;
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
+using static Gamekit3D.Damageable;
 
 namespace Gamekit3D
 {
-    public class SenderData : MonoBehaviour
+    public class SenderData : MonoBehaviour, IMessageReceiver
     {
         public Damageable damageablePlayerScript;
 
@@ -31,6 +34,9 @@ namespace Gamekit3D
         uint killId_uint;
         uint deathId_uint;
         uint pathId_uint;
+
+        protected Damageable ellenDamageable;
+        protected Vector3 enemyKillerPos;
 
         private void Start()
         {
@@ -63,6 +69,10 @@ namespace Gamekit3D
 
         private void OnEnable()
         {
+            ellenDamageable = GameObject.Find("Ellen").GetComponent<Damageable>();
+            ellenDamageable.onDamageMessageReceivers.Add(this);
+
+
             // Encuentra todos los objetos del tipo Damageable en la escena
             Damageable[] allDamageableObjects = GameObject.FindObjectsOfType<Damageable>();
 
@@ -203,15 +213,36 @@ namespace Gamekit3D
                 Debug.LogError("Error al enviar datos DE LA KILL al servidor: " + www.error);
             }
         }
-
+        public void OnReceiveMessage(MessageType type, object sender, object data)
+        {
+            switch (type)
+            {
+                case MessageType.DAMAGED:
+                    {
+                        Damageable.DamageMessage damageData = (Damageable.DamageMessage)data;
+                        //Damaged(damageData);
+                    }
+                    break;
+                case MessageType.DEAD:
+                    {
+                        Damageable.DamageMessage damageData = (Damageable.DamageMessage)data;
+                        //Die(damageData);
+                        DamageMessage _data = (DamageMessage)data;
+                        enemyKillerPos = _data.damager.transform.position;
+                    }
+                    break;
+            }
+        }
         // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP DEATH DATA
         public void SendDeathData()
         {
             // ------------------------- WORK DONE
+            
+
             int sessionID = session_id;
             int runID = run_id;
             Vector3 playerPosDeath = GameObject.Find("Ellen").transform.position; // POSITION PLAYER 
-            Vector3 enemyPosKill = playerPosDeath + damageablePlayerScript.positionToDamager;
+            Vector3 enemyPosKill = playerPosDeath + enemyKillerPos;
             DateTime time = DateTime.Now;
 
             run_id++;
