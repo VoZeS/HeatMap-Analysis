@@ -1,7 +1,9 @@
-    using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.IO;
+using System;
 
 
 [System.Serializable]
@@ -122,12 +124,17 @@ public class DatabaseReader : MonoBehaviour
 
     IEnumerator ReadKillDataFromPHP()
     {
+  
         UnityWebRequest www = UnityWebRequest.Get("https://citmalumnes.upc.es/~davidbo5/Database_KillReader.php");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
         {
+            string jsonString = "";
             Debug.Log("Error al leer datos desde PHP: " + www.error);
+
+            // Guardar el JSON en un archivo de texto
+            SaveJsonToFile("Data.json", jsonString);
         }
         else
         {
@@ -149,6 +156,7 @@ public class DatabaseReader : MonoBehaviour
                 killDataList.Add(heatmapKillData);
 
             }
+            //SaveJsonAsTextFile("Data.txt", jsonString);
         }
 
         // DEBUG EXAMPLE!
@@ -158,6 +166,38 @@ public class DatabaseReader : MonoBehaviour
         //Debug.Log("Debug Example 4: " + killDataList[10].KillID + " " + killDataList[10].playerKillerPosition);
 
     }
+
+    // Método para guardar el JSON en un archivo de texto
+    private void SaveJsonToFile(string fileName, string json)
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+
+        try
+        {
+            // Escribe el JSON en el archivo
+            File.WriteAllText(filePath, json);
+            Debug.Log("JSON guardado exitosamente en: " + filePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error al guardar el JSON en el archivo: " + e.Message);
+        }
+    }
+
+    /*private void SaveJsonAsTextFile(string fileName, string json)
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+
+        try
+        {
+            File.WriteAllText(filePath, json);
+            Debug.Log("Contenido JSON guardado como archivo de texto en: " + filePath);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error al guardar el contenido JSON como archivo de texto: " + e.Message);
+        }
+    }*/
 
     IEnumerator ReadDeathDataFromPHP()
     {
