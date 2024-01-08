@@ -38,6 +38,8 @@ namespace Gamekit3D
         protected Damageable ellenDamageable;
         protected Vector3 enemyKillerPos;
 
+        float pathTimer;
+
         private void Start()
         {
             // Load Session ID
@@ -50,7 +52,7 @@ namespace Gamekit3D
 
             Debug.Log("Session ID: " + session_id);
 
-
+            pathTimer = 0.0f;
         }
 
         private void LoadSessionID()
@@ -95,11 +97,11 @@ namespace Gamekit3D
 
             //Path sending provisional
             {
-                damageablePlayerScript.OnDeath.AddListener(SendPathData);
-                damageablePlayerScript.OnReceiveDamage.AddListener(SendPathData);
-                damageablePlayerScript.OnHitWhileInvulnerable.AddListener(SendPathData);
-                damageablePlayerScript.OnBecomeVulnerable.AddListener(SendPathData);
-                damageablePlayerScript.OnResetDamage.AddListener(SendPathData);
+                //damageablePlayerScript.OnDeath.AddListener(SendPathData);
+                //damageablePlayerScript.OnReceiveDamage.AddListener(SendPathData);
+                //damageablePlayerScript.OnHitWhileInvulnerable.AddListener(SendPathData);
+                //damageablePlayerScript.OnBecomeVulnerable.AddListener(SendPathData);
+                //damageablePlayerScript.OnResetDamage.AddListener(SendPathData);
 
             }
 
@@ -122,16 +124,27 @@ namespace Gamekit3D
             damageablePlayerScript.OnDeath.RemoveListener(SendDeathData);
 
 
-            damageablePlayerScript.OnDeath.RemoveListener(SendPathData);
-            damageablePlayerScript.OnReceiveDamage.RemoveListener(SendPathData);
-            damageablePlayerScript.OnHitWhileInvulnerable.RemoveListener(SendPathData);
-            damageablePlayerScript.OnBecomeVulnerable.RemoveListener(SendPathData);
-            damageablePlayerScript.OnResetDamage.RemoveListener(SendPathData);
+            //damageablePlayerScript.OnDeath.RemoveListener(SendPathData);
+            //damageablePlayerScript.OnReceiveDamage.RemoveListener(SendPathData);
+            //damageablePlayerScript.OnHitWhileInvulnerable.RemoveListener(SendPathData);
+            //damageablePlayerScript.OnBecomeVulnerable.RemoveListener(SendPathData);
+            //damageablePlayerScript.OnResetDamage.RemoveListener(SendPathData);
 
 
 
 
 
+        }
+
+        private void Update()
+        {
+            pathTimer += Time.deltaTime;
+
+            if (pathTimer >= 2.0f)
+            {
+                SendPathData();
+                pathTimer = 0;
+            }
         }
 
         // -------------------------------------------------------------------------------------------------------------------- SEND HEATMAP KILL DATA
