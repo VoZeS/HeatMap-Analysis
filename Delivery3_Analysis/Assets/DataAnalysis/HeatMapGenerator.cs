@@ -7,11 +7,13 @@ public class HeatmapGenerator : MonoBehaviour
     public DatabaseReader databaseReader;
     public GameObject cubePrefab; // Prefab del cubo para representar los puntos de datos
     public float updateInterval = 1f; // Intervalo de actualización en segundos
-    public Color killColor = new Color(0f, 0f, 1f); // Color para los cubos de asesinatos (azul por defecto)
-    public Color deathColor = new Color(1f, 0f, 0f); // Color para los cubos de muertes (rojo por defecto)
+    public Color killColor = Color.blue; // Color para los cubos de asesinatos
+    public Color deathColor = Color.red; // Color para los cubos de muertes
+    public Color pathColor = Color.green; // Color para los cubos de muertes
     public Vector3 cubeScale = new Vector3(1f, 1f, 1f); // Tamaño de los cubos
-    public float cubeAlpha = 1f; // Transparencia de los cubos (0 completamente transparente, 1 completamente opaco)
-    public float searchRadius = 2f; // Radio de búsqueda para determinar la densidad de puntos
+    [SerializeField] bool killHeathMap=false;
+    [SerializeField] bool deathHeathMap=false;
+    [SerializeField] bool path=false;
 
     void Start()
     {
@@ -32,25 +34,38 @@ public class HeatmapGenerator : MonoBehaviour
 
         List<HeatMapKillData> killDataList = databaseReader.killDataList;
         List<HeatMapDeathData> deathDataList = databaseReader.deathDataList;
+        List<PathData> pathDataList = databaseReader.pathDataList;
 
-        foreach (var killData in killDataList)
-        {
-            Color adjustedColor = GetAdjustedColor(killData.playerKillerPosition, killColor);
-            CreateCube(killData.playerKillerPosition, adjustedColor);
-        }
 
-        foreach (var deathData in deathDataList)
+        if (killHeathMap)
         {
-            Color adjustedColor = GetAdjustedColor(deathData.playerDeathPosition, deathColor);
-            CreateCube(deathData.playerDeathPosition, adjustedColor);
+            foreach (var killData in killDataList)
+            {
+                CreateCube(killData.playerKillerPosition, killColor);
+            }
         }
+        if (deathHeathMap)
+        {
+            foreach (var deathData in deathDataList)
+            {
+                CreateCube(deathData.playerDeathPosition, deathColor);
+            }
+        }
+        if (path)
+        {
+            foreach (var pathData in pathDataList)
+            {
+                CreateCube(pathData.playerPosition, pathColor);
+            }
+        }
+        
+
     }
 
     void CreateCube(Vector3 position, Color color)
     {
         GameObject cube = Instantiate(cubePrefab, position, Quaternion.identity);
         cube.transform.localScale = cubeScale; // Aplica el tamaño de los cubos
-        color.a = cubeAlpha; // Asigna la transparencia al color
         cube.GetComponent<Renderer>().material.color = color;
     }
 
@@ -63,25 +78,4 @@ public class HeatmapGenerator : MonoBehaviour
             Destroy(cube);
         }
     }
-
-    Color GetAdjustedColor(Vector3 position, Color baseColor)
-    {
-        Collider[] colliders = Physics.OverlapSphere(position, searchRadius);
-
-        int sameTypeCount = 0;
-
-        foreach (var collider in colliders)
-        {
-            if (collider.CompareTag("HeatmapCube") && collider.GetComponent<Renderer>().material.color == baseColor)
-            {
-                sameTypeCount++;
-            }
-        }
-
-        float intensityMultiplier = 1f + (sameTypeCount * 0.1f); // Ajusta según tu preferencia
-
-        return baseColor * intensityMultiplier;
-    }
-
-    
 }
