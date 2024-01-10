@@ -140,7 +140,7 @@ namespace Gamekit3D
         {
             pathTimer += Time.deltaTime;
 
-            if (pathTimer >= 2.0f)
+            if (pathTimer >= 0.1f)
             {
                 SendPathData();
                 pathTimer = 0;
