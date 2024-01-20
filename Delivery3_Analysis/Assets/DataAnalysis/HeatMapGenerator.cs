@@ -77,39 +77,49 @@ public class HeatmapGenerator : MonoBehaviour
         List<HeatMapDeathData> deathDataList = databaseReader.deathDataList;
         List<PathData> pathDataList = databaseReader.pathDataList;
 
+
+        List<Vector3> createdKillCubePositions = new List<Vector3>();
+
         if (killHeathMap)
         {
             foreach (var killData in killDataList)
             {
                 Vector3 gridPosition = GetGridPosition(killData.playerKillerPosition);
-                if (gridPosition != Vector3.zero)
+                if (gridPosition != Vector3.zero && !createdKillCubePositions.Contains(gridPosition))
                 {
                     CreateCube(gridPosition, killColor, "KillCube");
+                    createdKillCubePositions.Add(gridPosition);
+
                 }
             }
         }
+
+        List<Vector3> createdDeathCubePositions = new List<Vector3>();
         if (deathHeathMap)
         {
             foreach (var deathData in deathDataList)
             {
                 Vector3 gridPosition = GetGridPosition(deathData.playerDeathPosition);
-                if (gridPosition != Vector3.zero)
+                if (gridPosition != Vector3.zero && !createdDeathCubePositions.Contains(gridPosition))
                 {
-                    //grid[gridPosition.x, j]++;
-                   // CreateCube(gridPosition, deathColor, "DeathCube");
+                    
+                   CreateCube(gridPosition, deathColor, "DeathCube");
+                   createdDeathCubePositions.Add(gridPosition);
                 }
             }
 
-            for (var i = 0; i < gridSize; i++) {
+            /*for (var i = 0; i < gridSize; i++) {
 
                 for (var j = 0; j < gridSize; j++)
                 {
                    // CreateCube(gridPosition, deathColor, "DeathCube");
                 }
                
-            }
+            }*/
 
         }
+
+        //Create the path
         if (path)
         {
             foreach (var pathData in pathDataList)
