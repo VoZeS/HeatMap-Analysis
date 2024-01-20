@@ -78,35 +78,49 @@ public class HeatmapGenerator : MonoBehaviour
         List<PathData> pathDataList = databaseReader.pathDataList;
 
 
-        List<Vector3> createdKillCubePositions = new List<Vector3>();
+        List<Vector2> createdKillCubePositions = new List<Vector2>();
+
+
+
 
         if (killHeathMap)
         {
-            foreach (var killData in killDataList)
-            {
-                Vector3 gridPosition = GetGridPosition(killData.playerKillerPosition);
-                if (gridPosition != Vector3.zero && !createdKillCubePositions.Contains(gridPosition))
-                {
-                    CreateCube(gridPosition, killColor, "KillCube");
-                    createdKillCubePositions.Add(gridPosition);
 
-                }
+        foreach (var killData in killDataList)
+        {
+            Vector3 gridPosition = GetGridPosition(killData.playerKillerPosition);
+
+            // Obtén una versión 2D de la posición (ignorando la coordenada y)
+            Vector2 gridPosition2D = new Vector2(gridPosition.x, gridPosition.z);
+            
+            if (gridPosition != Vector3.zero && !createdKillCubePositions.Contains(gridPosition2D))
+            {
+                CreateCube(gridPosition, killColor, "KillCube");
+                createdKillCubePositions.Add(gridPosition2D);
             }
         }
 
-        List<Vector3> createdDeathCubePositions = new List<Vector3>();
+        }
+
+        List<Vector2> createdDeathCubePositions = new List<Vector2>();
+
         if (deathHeathMap)
         {
-            foreach (var deathData in deathDataList)
+
+        foreach (var deathData in deathDataList)
+        {
+            Vector3 gridPosition = GetGridPosition(deathData.playerDeathPosition);
+
+            // Obtén una versión 2D de la posición (ignorando la coordenada y)
+            Vector2 gridPosition2D = new Vector2(gridPosition.x, gridPosition.z);
+            
+            if (gridPosition != Vector3.zero && !createdDeathCubePositions.Contains(gridPosition2D))
             {
-                Vector3 gridPosition = GetGridPosition(deathData.playerDeathPosition);
-                if (gridPosition != Vector3.zero && !createdDeathCubePositions.Contains(gridPosition))
-                {
-                    
-                   CreateCube(gridPosition, deathColor, "DeathCube");
-                   createdDeathCubePositions.Add(gridPosition);
-                }
+                CreateCube(gridPosition, deathColor, "DeathCube");
+                createdDeathCubePositions.Add(gridPosition2D);
             }
+        }
+
 
             /*for (var i = 0; i < gridSize; i++) {
 
